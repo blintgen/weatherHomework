@@ -10,18 +10,21 @@ class City {
 class HistoryService {
   // TODO: Define a read method that reads from the searchHistory.json file
   private async read() {
-    const filePath = path.join(__dirname, 'searchHistory.json');
+    const filePath = path.join('/home/boa/Bootcamp/09-Servers-and-APIs/02-Challenge/Develop/server/db/db.json');
     try {
       const data = await fs.readFile(filePath, 'utf-8');
-      return JSON.parse(data) as City[];
+      return data ? JSON.parse(data) as City[] : [];
     } catch (error) {
+      if ((error as NodeJS.ErrnoException).code === 'ENOENT') {
+        return [];
+      }
       console.error('Error reading file:', error);
       throw error;
     }
   }
   // TODO: Define a write method that writes the updated cities array to the searchHistory.json file
   private async write(cities: City[]) {
-    const filePath = path.join(__dirname, 'searchHistory.json');
+    const filePath = path.join('/home/boa/Bootcamp/09-Servers-and-APIs/02-Challenge/Develop/server/db/db.json');
     try {
       await fs.writeFile(filePath, JSON.stringify(cities, null, 2), 'utf-8');
     } catch (error) {
